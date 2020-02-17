@@ -56,14 +56,19 @@ class pixover
         $size = getimagesize($this->image);
         $file = imagecreatefromstring(file_get_contents($this->image));
         $dst = imagecreatetruecolor($width,$height);
-        imagecopyresampled($dst,$file,0,0,0,0,$width,$height,$size[0],$size[1]);
-        imagedestroy($file);
+
         if (!file_exists($dir)){
             mkdir($dir);
         }
         if ($this->type == 'PNG'){
+            imagealphablending($dst, false);
+            imagesavealpha($dst,true);
+            imagecopyresampled($dst,$file,0,0,0,0,$width,$height,$size[0],$size[1]);
+            imagedestroy($file);
             imagepng($dst,$fullpath);
         }else{
+            imagecopyresampled($dst,$file,0,0,0,0,$width,$height,$size[0],$size[1]);
+            imagedestroy($file);
             imagejpeg($dst,$fullpath);
         }
         imagedestroy($dst);
